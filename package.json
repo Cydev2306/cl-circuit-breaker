@@ -1,0 +1,17 @@
+{
+  "name": "cl-circuit-breaker",
+  "version": "1.0.0",
+  "description": "api circuit breaker",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "cyril-luc",
+  "license": "ISC",
+  "dependencies": {
+    "es6-promise": "^4.0.5",
+    "express": "^4.14.0",
+    "isomorphic-fetch": "^2.2.1",
+    "node-fetch": "^1.6.3"
+  }
+}
