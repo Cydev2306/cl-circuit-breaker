@@ -3,6 +3,8 @@ var app = require('express')();
 var redis = require('redis');
 var morgan = require('morgan');
 var slow = require('./slow');
+var timeout = require('connect-timeout');
+
 
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
@@ -13,14 +15,16 @@ var headers = {
     Authorization: `luc.cyril`,
 };
 
-var API_URL = "http://pizzapi.herokuapp.com"
+var API_URL = "http://pizzapi.herokuapp.com";
 var port = process.env.PORT || 3000;
 
 // create a new redis client and connect to our local redis instance
 var client = redis.createClient();
+
 client.on('error', function (err) {
     console.log("Error " + err);
 });
+
 client.on('connect', function() {
     console.log('connected');
 });
@@ -45,7 +49,19 @@ function Wrapper(param,res){
 };
 
 app.use(morgan('dev'));
-app.use(slow(true));
+app.use(timeout('2s', { respond: false }));
+
+app.use(slow(false));
+
+app.use((req, res, next) => {
+  console.log(req.timedout);
+  if(!req.timedout) {
+    next();
+  }
+  else {
+    res.status(503).json({error:  'Timeout error.'});
+  }
+});
 
 app.get('/orders', function(req, res) {
   console.log("orders")
