@@ -5,7 +5,7 @@ var client = require('./redis')();
 var headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    Authorization: `luc.cyril`,
+    Authorization: 'luc.cyril',
 };
 
 var API_URL = "http://pizzapi.herokuapp.com";
@@ -19,8 +19,10 @@ function callApi(param, status, res){
        response.json().then(json => ({ json, response }))
      )
      .then((responseObj) => {
+      console.log(responseObj);
       if (!responseObj.response.ok) {
-        res.sendStatus(403);
+        console.log('error');
+        res.sendStatus(500);
         return client.get(param);
       }
       client.set(param, JSON.stringify(responseObj.json));

@@ -38,11 +38,13 @@ app.use((req, res, next) => {
 
 
 app.get('/orders', function(req, res) {
+  librato.increment('orders');
   callApi("orders", req.circuitStatus, res)
 });
 
 //pizzas
 app.get('/pizzas', function(req, res) {
+  librato.increment('pizzas');
   callApi("pizzas", req.circuitStatus, res)
 });
 

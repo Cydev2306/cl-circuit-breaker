@@ -7,8 +7,6 @@ module.exports = function breaker(threshold) {
   var limit = threshold || 5;
 
   return function(req, res, next) {
-    console.log(numberOfErrors);
-    console.log(circuitStatus);
     onFinished(res, () => {
       if(res.statusCode === 503 || req.timedout) {
         numberOfErrors++;
