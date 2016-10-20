@@ -3,6 +3,8 @@ var app = require('express')();
 var redis = require('redis');
 var morgan = require('morgan');
 var slow = require('./slow');
+var timeout = require('connect-timeout');
+
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
