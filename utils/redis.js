@@ -1,7 +1,7 @@
 var Redis = require('ioredis');
 
 function createRedisClient() {
-  var client = new Redis();
+  var client = new Redis(process.env.REDIS_URL);
 
   client.on('error', function (err) {
       console.log("Error " + err);
