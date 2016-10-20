@@ -3,23 +3,38 @@ var app = require('express')();
 var redis = require('redis');
 var morgan = require('morgan');
 var slow = require('./slow');
-
 require('es6-promise').polyfill();
 require('isomorphic-fetch');
 
+function getCredentials(){
+  if(process.env.REDIS_HOST) console.log("connected on redis Cloud")
+  else console.log("connected on local redis");
+    return {
+      "redisHost": process.env.REDIS_HOST || "127.0.0.1",
+      "redisPort": process.env.REDIS_PORT || 6379,
+      "redisKey": process.env.REDIS_KEY || ""
+    }
+}
 var headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
     Authorization: `luc.cyril`,
 };
-
+var auth = getCredentials()
 var API_URL = "http://pizzapi.herokuapp.com"
 var port = process.env.PORT || 3000;
 
 // create a new redis client and connect to our local redis instance
-var client = redis.createClient();
-client.on('error', function (err) {
-    console.log("Error " + err);
+var client = redis.createClient(
+  auth.redisPort,
+  auth.redisHost,
+  {
+    'auth_pass': auth.redisKey,
+    'return_buffers': true
+  }
+)
+.on('error', function (err) {
+  console.error('ERR:REDIS: ' + err);
 });
 client.on('connect', function() {
     console.log('connected');
@@ -38,7 +53,6 @@ function Wrapper(param,res){
       res.sendStatus(403);
       return client.get(param)
     }
-
     client.set(param, JSON.stringify(responseObj.json));
     return res.send(responseObj.json);
   });
