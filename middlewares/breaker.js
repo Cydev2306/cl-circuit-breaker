@@ -3,7 +3,7 @@ var onHeaders = require('on-headers');
 var circuitStatus = 'CLOSE';
 var numberOfErrors = 0;
 
-module.exports = function breaker(threshold) {
+module.exports = function breaker(threshold, librato) {
   var limit = threshold || 5;
 
   return function(req, res, next) {
@@ -16,6 +16,7 @@ module.exports = function breaker(threshold) {
       }
     });
     req.circuitStatus = circuitStatus;
+    librato.measure('circuitStatus', ['OPEN', 'HALF_OPEN','CLOSE'].indexOf(circuitStatus));
     next();
   }
 }

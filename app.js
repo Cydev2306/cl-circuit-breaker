@@ -24,10 +24,9 @@ app.use((req,res, next) => {
   }, 2500);
 });*/
 
-app.use(breaker(2));
+app.use(breaker(2, librato));
 
 app.use((req, res, next) => {
-  console.log(req.timedout);
   if(!req.timedout || req.circuitStatus === 'OPEN') {
     next();
   } else {
