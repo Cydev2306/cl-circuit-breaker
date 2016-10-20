@@ -29,7 +29,7 @@ function callApi(param, status, res){
         {cached: false},
         {data: responseObj.json}
       );
-      return res.send(responseJson);
+      return res.status(200).json(responseJson);
     });
   }
 
