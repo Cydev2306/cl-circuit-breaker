@@ -4,11 +4,13 @@ var morgan = require('morgan');
 var callApi = require('./utils/api');
 var timeout = require('connect-timeout');
 var port = process.env.PORT || 3000;
+var cors = require('cors');
 
 // Custom middlewares
 var breaker = require('./breaker');
 
 app.use(morgan('dev'));
+app.use(cors());
 app.use(timeout('2s', { respond: false }));
 /* SLOW error testing
 app.use((req,res, next) => {

@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "connect-timeout": "^1.7.0",
+    "cors": "^2.8.1",
     "es6-promise": "^4.0.5",
     "express": "^4.14.0",
     "ioredis": "^2.4.0",
