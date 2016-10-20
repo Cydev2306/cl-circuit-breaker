@@ -5,9 +5,15 @@ var callApi = require('./utils/api');
 var timeout = require('connect-timeout');
 var port = process.env.PORT || 3000;
 var cors = require('cors');
+var librato = require('librato-node');
+
+if(process.env.NODE_ENV === 'production') {
+  librato.configure({email: process.env.LIBRATO_MAIL, token: process.env.LIBRATO_TOKEN});
+  app.use(librato.middleware());
+}
 
 // Custom middlewares
-var breaker = require('./breaker');
+var breaker = require('./middlewares/breaker');
 
 app.use(morgan('dev'));
 app.use(cors());
