@@ -7,10 +7,9 @@ var port = process.env.PORT || 3000;
 var cors = require('cors');
 var librato = require('librato-node');
 
-if(process.env.NODE_ENV === 'production') {
-  librato.configure({email: process.env.LIBRATO_MAIL, token: process.env.LIBRATO_TOKEN});
-  app.use(librato.middleware());
-}
+librato.configure({email: process.env.LIBRATO_MAIL, token: process.env.LIBRATO_TOKEN});
+librato.start()
+app.use(librato.middleware());
 
 // Custom middlewares
 var breaker = require('./middlewares/breaker');
