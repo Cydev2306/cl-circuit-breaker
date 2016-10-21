@@ -8,7 +8,9 @@ var headers = {
     Authorization: 'luc.cyril',
 };
 
-var API_URL = "http://pizzapi.herokuapp.com";
+var API_URL = process.env.USE_MOCK === 'TRUE'
+  ? 'http://mock-api-pizza.herokuapp.com'
+  : 'http://pizzapi.herokuapp.com';
 
 function callApi(param, method, req, res, needCache){
   if (req.circuitStatus !== 'OPEN') {
