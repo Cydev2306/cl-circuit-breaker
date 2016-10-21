@@ -10,22 +10,33 @@ var headers = {
 
 var API_URL = "http://pizzapi.herokuapp.com";
 
-function callApi(param, status, res){
-  if (status !== 'OPEN') {
-    return fetch(`${API_URL}/${param}`,{
-       headers
-     })
+function callApi(param, method, req, res, needCache){
+  if (req.circuitStatus !== 'OPEN') {
+    var fetchParameters = {
+      headers,
+      method,
+    }
+
+    if (method === 'post') {
+      fetchParameters.body = JSON.stringify(req.body);
+    }
+
+    return fetch(`${API_URL}/${param}`,fetchParameters)
      .then(response =>
        response.json().then(json => ({ json, response }))
      )
      .then((responseObj) => {
-      console.log(responseObj);
       if (!responseObj.response.ok) {
-        console.log('error');
         res.sendStatus(500);
         return client.get(param);
       }
-      client.set(param, JSON.stringify(responseObj.json));
+      if (needCache) {
+        client.set(param, JSON.stringify(responseObj.json));
+        responseObj.json.forEach((elmt) => {
+          client.set(`${param}:${elmt.id}`, JSON.stringify(elmt));
+        });
+      }
+
       const responseJson = Object.assign(
         {},
         {cached: false},
@@ -35,7 +46,7 @@ function callApi(param, status, res){
     });
   }
 
-  return client.get(param)
+  return client.get(`${param.split('/').join(':').trim()}`)
     .then((result) => {
       const cachedValues = Object.assign(
         {},
